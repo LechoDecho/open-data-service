@@ -12,10 +12,10 @@ COPY ./package*.json ./
 RUN npm ci
 
 # copy rest of the files
-COPY ./src ./src
 COPY ./tsconfig.json ./
 COPY ./jest.config.js ./
 COPY ./.eslintrc.js ./
+COPY ./src ./src
 
 # lint project
 RUN npm run lint-ci

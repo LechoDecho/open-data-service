@@ -19,10 +19,10 @@ COPY package*.json ./
 RUN npm ci
 
 # copy rest of the files
-COPY ./src ./src
 COPY ./public ./public
 COPY ./*.js ./
 COPY ./*.json ./
+COPY ./src ./src
 
 RUN echo "VUE_APP_BASE_URL=$UI_BASE_URL" > .env \
     && echo "VUE_APP_ADAPTER_SERVICE_URL=$ADAPTER_SERVICE_URL" >> .env \
