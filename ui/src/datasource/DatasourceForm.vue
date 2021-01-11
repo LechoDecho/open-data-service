@@ -52,7 +52,7 @@
         :complete="dialogStep > 3"
         step="3"
       >
-        Meta-Data
+        Schema-recommendation
       </v-stepper-step>
       <v-stepper-content step="3">
         <datasource-metadata-config
@@ -70,17 +70,35 @@
         :complete="dialogStep > 4"
         step="4"
       >
-        Trigger Configuration
-        <small>Configure Execution Details</small>
+        Meta-Data
       </v-stepper-step>
       <v-stepper-content step="4">
-        <trigger-config
-          v-model="datasource.trigger"
+        <datasource-metadata-config
+          v-model="datasource.metadata"
           @validityChanged="validStep4 = $event"
         />
         <stepper-button-group
           :step="4"
           :next-enabled="validStep4"
+          @stepChanged="dialogStep = $event"
+        />
+      </v-stepper-content>
+
+      <v-stepper-step
+        :complete="dialogStep > 5"
+        step="5"
+      >
+        Trigger Configuration
+        <small>Configure Execution Details</small>
+      </v-stepper-step>
+      <v-stepper-content step="5">
+        <trigger-config
+          v-model="datasource.trigger"
+          @validityChanged="validStep5 = $event"
+        />
+        <stepper-button-group
+          :step="5"
+          :next-enabled="validStep5"
           :next-visible="false"
           @stepChanged="dialogStep = $event"
         />
@@ -111,6 +129,7 @@ export default class DatasourceForm extends Vue {
   private validStep2 = true // starts with valid default values
   private validStep3 = true // starts with valid default values
   private validStep4 = true // starts with valid default values
+  private validStep5 = true // starts with valid default values
 
   @PropSync('value')
   private datasource: Datasource | undefined
@@ -125,7 +144,8 @@ export default class DatasourceForm extends Vue {
     return this.validStep1 &&
         this.validStep2 &&
         this.validStep3 &&
-        this.validStep4
+        this.validStep4 &&
+        this.validStep5
   }
 
   @Emit('validityChanged')
