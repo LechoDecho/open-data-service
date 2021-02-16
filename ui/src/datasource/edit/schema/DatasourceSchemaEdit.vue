@@ -67,13 +67,13 @@ export default class DatasourceSchemaEdit extends Vue {
         .then((value) => {
           this.dataSource.dataSchema.data = value
         })
-        .catch(error => console.error('Failed to create datasource', error))
+        .catch(error => console.error('Fast schema suggestion failed!', error))
     } else if (this.dataSource.mode == Mode.DETAILED) {
       SchemaSuggestionREST.getSchemaDetailed(this.dataSource.dataSchema)
         .then((value) => {
           this.dataSource.dataSchema.data = value
         })
-        .catch(error => console.error('Failed to create datasource', error))
+        .catch(error => console.error('Detailed schema suggestion failed!', error))
     }
   }
 }
