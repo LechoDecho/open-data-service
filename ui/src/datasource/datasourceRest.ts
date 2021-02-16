@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
-import Datasource, { Data, DataLocation } from './datasource'
-import { ADAPTER_SERVICE_URL } from '@/env'
+import Datasource, { Data, DataLocation, DataSchema } from './datasource'
+import { ADAPTER_SERVICE_URL, SCHEMA_SERVICE_URL } from '@/env'
 
 /**
  * Axios instance with default headers and base url.
@@ -9,6 +9,12 @@ import { ADAPTER_SERVICE_URL } from '@/env'
  */
 const http = axios.create({
   baseURL: ADAPTER_SERVICE_URL,
+  headers: { 'Content-Type': 'application/json' },
+  transformResponse: []
+})
+
+const httpSchema = axios.create({
+  baseURL: SCHEMA_SERVICE_URL,
   headers: { 'Content-Type': 'application/json' },
   transformResponse: []
 })
@@ -55,4 +61,16 @@ export async function getDatasourceData (id: number): Promise<Data> {
   const location = jsonResponse.location
   const dataResponse = await http.get<string>(location)
   return JSON.parse(dataResponse.data)
+}
+
+export async function getSchemaFast (dataSchema: DataSchema): Promise<string> {
+  console.log(dataSchema.data)
+  const response = await httpSchema.post<string>('/fastGen', dataSchema.data)
+  return response.data
+}
+
+export async function getSchemaDetailed (dataSchema: DataSchema): Promise<string> {
+  console.log(dataSchema.data)
+  const response = await httpSchema.post<string>('/detailedGen', dataSchema.data)
+  return response.data
 }

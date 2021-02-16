@@ -4,7 +4,6 @@
 version: '3.7'
 
 services:
-
   # ----------------- UI SERVICE (/ui) --------------------
   ui:
     image: ${DOCKER_REGISTRY}/ui
@@ -16,9 +15,10 @@ services:
         STORAGE_SERVICE_URL: /api/storage
         PIPELINE_SERVICE_URL: /api/pipelines
         NOTIFICATION_SERVICE_URL: /api/notification
+        SCHEMA_SERVICE_URL: /api/schema
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.to-ui.rule=PathPrefix(`/`)"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.to-ui.rule=PathPrefix(`/`)'
 
   # ----------------- ADAPTER SERVICE (/adapter) --------------------
   adapter:
@@ -43,10 +43,10 @@ services:
       AMQP_PUBLISH_RETRIES: 5
       AMQP_PUBLISH_BACKOFF: 1000
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.to-adapter.rule=PathPrefix(`/api/adapter`)"
-      - "traefik.http.routers.to-adapter.middlewares=adapter-stripprefix@docker"
-      - "traefik.http.middlewares.adapter-stripprefix.stripprefix.prefixes=/api/adapter"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.to-adapter.rule=PathPrefix(`/api/adapter`)'
+      - 'traefik.http.routers.to-adapter.middlewares=adapter-stripprefix@docker'
+      - 'traefik.http.middlewares.adapter-stripprefix.stripprefix.prefixes=/api/adapter'
 
   adapter-db:
     image: postgres:13-alpine
@@ -73,10 +73,10 @@ services:
     build:
       context: ./scheduler/
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.to-scheduler.rule=PathPrefix(`/api/scheduler`)"
-      - "traefik.http.routers.to-scheduler.middlewares=scheduler-stripprefix@docker"
-      - "traefik.http.middlewares.scheduler-stripprefix.stripprefix.prefixes=/api/scheduler"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.to-scheduler.rule=PathPrefix(`/api/scheduler`)'
+      - 'traefik.http.routers.to-scheduler.middlewares=scheduler-stripprefix@docker'
+      - 'traefik.http.middlewares.scheduler-stripprefix.stripprefix.prefixes=/api/scheduler'
     depends_on:
       - rabbitmq
   # ----------------- STORAGE SERVICE (/storage) --------------------
@@ -112,10 +112,10 @@ services:
       - storage-db-liquibase # TODO: make sure the migration runs through before reading db structure
       - rabbitmq
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.to-storage-mq.rule=PathPrefix(`/api/storage-mq`)"
-      - "traefik.http.routers.to-storage-mq.middlewares=storage-mq-stripprefix@docker"
-      - "traefik.http.middlewares.storage-mq-stripprefix.stripprefix.prefixes=/api/storage-mq"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.to-storage-mq.rule=PathPrefix(`/api/storage-mq`)'
+      - 'traefik.http.routers.to-storage-mq.middlewares=storage-mq-stripprefix@docker'
+      - 'traefik.http.middlewares.storage-mq-stripprefix.stripprefix.prefixes=/api/storage-mq'
 
   storage: # Wraps postgres database with API
     image: ${DOCKER_REGISTRY}/storage
@@ -131,11 +131,11 @@ services:
       - storage-db
       - storage-db-liquibase # TODO: make sure the migration runs through before reading db structure
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.to-storage.rule=Path(`/api/storage`) || PathPrefix(`/api/storage/`)"
-      - "traefik.http.routers.to-storage.middlewares=storage-stripprefix@docker,storage-addaccept@docker"
-      - "traefik.http.middlewares.storage-stripprefix.stripprefix.prefixes=/api/storage"
-      - "traefik.http.middlewares.storage-addaccept.headers.customrequestheaders.Accept=application/json" # Firefox Browser Support
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.to-storage.rule=Path(`/api/storage`) || PathPrefix(`/api/storage/`)'
+      - 'traefik.http.routers.to-storage.middlewares=storage-stripprefix@docker,storage-addaccept@docker'
+      - 'traefik.http.middlewares.storage-stripprefix.stripprefix.prefixes=/api/storage'
+      - 'traefik.http.middlewares.storage-addaccept.headers.customrequestheaders.Accept=application/json' # Firefox Browser Support
 
   storage-db:
     image: postgres:13-alpine
@@ -145,7 +145,7 @@ services:
       POSTGRES_PASSWORD: ods_pw
   # Uncomment this if you want to persist the data.
   # volumes:
-  #   - "./pgdata:/var/lib/postgresql/data"
+  #   - './pgdata:/var/lib/postgresql/data'
 
   # Uncomment this if you want to manage the Postgres databases with adminer
   # adminer: # management UI for Postgres
@@ -179,14 +179,14 @@ services:
       CONNECTION_RETRIES: '30'
       CONNECTION_BACKOFF_IN_MS: '2000'
 
-      POSTGRES_HOST: "pipeline-db"
+      POSTGRES_HOST: 'pipeline-db'
       POSTGRES_PORT: 5432
-      POSTGRES_USER: "pipeline-service"
-      POSTGRES_PW: "pw"
-      POSTGRES_DB: "ods-pipelines"
-      POSTGRES_SCHEMA: "public" # other schemas have to be created somewhere before use!
+      POSTGRES_USER: 'pipeline-service'
+      POSTGRES_PW: 'pw'
+      POSTGRES_DB: 'ods-pipelines'
+      POSTGRES_SCHEMA: 'public' # other schemas have to be created somewhere before use!
 
-      AMQP_URL: "amqp://rabbit_adm:R4bb!7_4DM_p4SS@rabbitmq:5672"
+      AMQP_URL: 'amqp://rabbit_adm:R4bb!7_4DM_p4SS@rabbitmq:5672'
       AMQP_PIPELINE_EXECUTION_EXCHANGE: 'ods_global'
       AMQP_PIPELINE_EXECUTION_SUCCESS_TOPIC: 'pipeline.execution.success'
       AMQP_PIPELINE_EXECUTION_ERROR_TOPIC: 'pipeline.execution.error'
@@ -198,10 +198,10 @@ services:
       AMQP_DATASOURCE_EXECUTION_SUCCESS_TOPIC: 'datasource.execution.success'
       AMQP_PIPELINE_EXECUTION_QUEUE: 'pipeline.pipeline-execution'
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.to-pipeline.rule=PathPrefix(`/api/pipelines`)"
-      - "traefik.http.routers.to-pipeline.middlewares=pipeline-stripprefix@docker"
-      - "traefik.http.middlewares.pipeline-stripprefix.stripprefix.prefixes=/api/pipelines"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.to-pipeline.rule=PathPrefix(`/api/pipelines`)'
+      - 'traefik.http.routers.to-pipeline.middlewares=pipeline-stripprefix@docker'
+      - 'traefik.http.middlewares.pipeline-stripprefix.stripprefix.prefixes=/api/pipelines'
 
   pipeline-db:
     image: postgres:13-alpine
@@ -226,7 +226,7 @@ services:
       CONNECTION_RETRIES: 30
       CONNECTION_BACKOFF_IN_MS: 2000
 
-      AMQP_URL: "amqp://rabbit_adm:R4bb!7_4DM_p4SS@rabbitmq:5672"
+      AMQP_URL: 'amqp://rabbit_adm:R4bb!7_4DM_p4SS@rabbitmq:5672'
       AMQP_PIPELINE_EXECUTION_EXCHANGE: 'ods_global'
       AMQP_PIPELINE_EXECUTION_QUEUE: 'notification.pipeline-execution'
       AMQP_PIPELINE_EXECUTION_SUCCESS_TOPIC: 'pipeline.execution.success'
@@ -237,10 +237,10 @@ services:
       - notification-db
       - rabbitmq
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.to-notification.rule=PathPrefix(`/api/notification`)"
-      - "traefik.http.routers.to-notification.middlewares=notification-stripprefix@docker"
-      - "traefik.http.middlewares.notification-stripprefix.stripprefix.prefixes=/api/notification"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.to-notification.rule=PathPrefix(`/api/notification`)'
+      - 'traefik.http.routers.to-notification.middlewares=notification-stripprefix@docker'
+      - 'traefik.http.middlewares.notification-stripprefix.stripprefix.prefixes=/api/notification'
 
   notification-db:
     image: postgres:13-alpine
@@ -249,7 +249,7 @@ services:
       POSTGRES_PASSWORD: 'admin'
       POSTGRES_DB: 'ods-notifications'
 
-# -------------------- EDGE SERVER (PORT 9000) -----------------------------
+  # -------------------- EDGE SERVER (PORT 9000) -----------------------------
   edge:
     image: traefik:2.3
     command:
@@ -259,18 +259,19 @@ services:
       - --api.insecure # Dashboard: don't do that in production
       # - --log.level=DEBUG
     ports:
-      - "9000:80"     # The HTTP port
-      - "9001:8080"   # The Web UI (enabled by --api)
+      - '9000:80' # The HTTP port
+      - '9001:8080' # The Web UI (enabled by --api)
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
 
-# -------------------- RABBIT-MQ -------------------------------------------
+  # -------------------- RABBIT-MQ -------------------------------------------
   rabbitmq:
-    image:  rabbitmq:3-management-alpine
+    image: rabbitmq:3-management-alpine
     environment:
       RABBITMQ_ERLANG_COOKIE: 'S0m3_R4bBi7_C0ok13'
       RABBITMQ_DEFAULT_USER: 'rabbit_adm'
       RABBITMQ_DEFAULT_PASS: 'R4bb!7_4DM_p4SS'
     ports:
-      - "15672:15672"
-      - "5672:5672"
+      - '15672:15672'
+      - '5672:5672'
+

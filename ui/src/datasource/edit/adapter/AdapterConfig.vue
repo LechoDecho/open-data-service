@@ -47,6 +47,7 @@ import Datasource from '../../datasource'
 import CsvAdapterConfig from './CsvAdapterConfig.vue'
 import { requiredRule } from '../../../validators'
 
+
 @Component({
   components: { CsvAdapterConfig }
 })
